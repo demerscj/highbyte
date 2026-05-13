@@ -1,0 +1,37 @@
+# ── HighByte appData ─────────────────────────────────────────────────────────
+# Never commit live instance data or credentials.
+
+# Certificate stores (contain the AES encryption key used for all secrets)
+appdata/**/intelligencehub-certificatestore.pkcs12
+
+# Deployment settings contain GitHub PAT (even when encrypted, avoid committing)
+appdata/**/deployment-settings.json
+
+# Secrets and user databases
+appdata/**/intelligencehub-secrets.json
+appdata/**/intelligencehub-users.json
+
+# Runtime configuration (live state written by the hub; contains PATs and tokens)
+appdata/**/intelligencehub-configuration.json
+appdata/**/intelligencehub-remoteconfig.json
+
+# Runtime databases and lock files
+appdata/**/*.db
+appdata/**/*.dat
+appdata/**/*.lck
+appdata/**/*.log
+
+# Auto-backup copies (can be large; use GitHub backup branch instead)
+appdata/**/backups/
+
+# Logback output
+appdata/**/logs/
+
+# ── Python / Docker build artefacts ──────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store

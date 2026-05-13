@@ -1,0 +1,9 @@
+{
+  "server_name": "opcua-dev",
+  "host": "0.0.0.0",
+  "port": 4840,
+  "namespace": "urn:highbyte:opcua:dev",
+  "status": "DEV_READY",
+  "counter_start": 100,
+  "temperature_start": 21.5
+}

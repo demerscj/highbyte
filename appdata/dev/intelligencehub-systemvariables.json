@@ -1,0 +1,7 @@
+[ {
+  "name" : "mqtt_port",
+  "value" : "1885"
+}, {
+  "name" : "opc_server_port",
+  "value" : "4840"
+} ]

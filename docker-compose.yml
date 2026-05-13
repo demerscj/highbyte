@@ -1,0 +1,119 @@
+# HighByte IntelligenceHub — Dev / Test / Prod stack
+#
+# Topology:
+#   dev  (central hub)
+#    └── test  (remote of dev  |  central hub)
+#          └── prod  (remote of test)
+#
+# Port mapping (host:container):
+#   dev  — REST API: 45245  |  MQTT: 1885  |  Data/MCP: 8885
+#   test — REST API: 45246  |  MQTT: 1886  |  Data/MCP: 8886
+#   prod — REST API: 45247  |  MQTT: 1887  |  Data/MCP: 8887
+#
+# ─── Central-config wiring (one-time manual step) ────────────────────────────
+#  1. docker compose up -d
+#  2. Open dev UI  → http://localhost:45245
+#       Network → Hubs → Create Network Group → copy the generated TOKEN
+#       Paste it into appdata/test/intelligencehub-remoteconfig.json  ("token" field)
+#  3. Open test UI → http://localhost:45246
+#       Network → Hubs → Create Network Group → copy the generated TOKEN
+#       Paste it into appdata/prod/intelligencehub-remoteconfig.json  ("token" field)
+#  4. docker compose restart test prod
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  dev:
+    image: "sha256:d2bf21f8ef9c4290df27145119160a7627872e170915f1187ddc8c8562381af9"
+    container_name: highbyte-dev
+    restart: on-failure
+    ports:
+      - "45245:45245"   # REST API / WebSocket (central hub endpoint)
+      - "1885:1885"     # Internal MQTT broker
+      - "8885:8885"     # REST data server / MCP / I3X
+    volumes:
+      - ./appdata/dev:/usr/local/highbyte/appData
+    # ── GitHub startup sync ──────────────────────────────────────────────────
+    # Uncomment AFTER completing steps in appdata/dev/deployment-settings.json:
+    #   1. Replace all TODO: values with real repo URI, credentials, and branch.
+    #   2. Encrypt credentials: docker compose exec dev java -jar
+    #        /usr/local/highbyte/runtime/intelligencehub-runtime.jar
+    #        encrypt /usr/local/highbyte/appData/deployment-settings.json
+    #   3. Push dev/intelligencehub-deployment.json to GitHub (see github-repo/).
+    #   4. Uncomment the two lines below and restart this service.
+    environment:
+      HIGHBYTE_DEPLOYMENT_FILE: /usr/local/highbyte/appData/deployment-settings.json
+    networks:
+      - highbyte-net
+
+  test:
+    image: "sha256:d2bf21f8ef9c4290df27145119160a7627872e170915f1187ddc8c8562381af9"
+    container_name: highbyte-test
+    restart: on-failure
+    ports:
+      - "45246:45245"   # REST API / WebSocket (central hub endpoint)
+      - "1886:1885"     # Internal MQTT broker
+      - "8886:8885"     # REST data server / MCP / I3X
+    volumes:
+      - ./appdata/test:/usr/local/highbyte/appData
+    # ── GitHub startup sync ──────────────────────────────────────────────────
+    # Uncomment AFTER completing steps in appdata/test/deployment-settings.json:
+    #   1. Replace all TODO: values with real repo URI, credentials, and branch.
+    #   2. Encrypt credentials: docker compose exec test java -jar
+    #        /usr/local/highbyte/runtime/intelligencehub-runtime.jar
+    #        encrypt /usr/local/highbyte/appData/deployment-settings.json
+    #   3. Push test/intelligencehub-deployment.json to GitHub (see github-repo/).
+    #   4. Uncomment the two lines below and restart this service.
+    environment:
+      HIGHBYTE_DEPLOYMENT_FILE: /usr/local/highbyte/appData/deployment-settings.json
+    networks:
+      - highbyte-net
+    depends_on:
+      - dev
+
+  prod:
+    image: "sha256:d2bf21f8ef9c4290df27145119160a7627872e170915f1187ddc8c8562381af9"
+    container_name: highbyte-prod
+    restart: on-failure
+    ports:
+      - "45247:45245"   # REST API / WebSocket
+      - "1887:1885"     # Internal MQTT broker
+      - "8887:8885"     # REST data server / MCP / I3X
+    volumes:
+      - ./appdata/prod:/usr/local/highbyte/appData
+    networks:
+      - highbyte-net
+    depends_on:
+      - test
+
+  opcua-dev:
+    build:
+      context: ./opcua-server
+    container_name: opcua-dev
+    restart: on-failure
+    ports:
+      - "4840:4840"
+    environment:
+      CONFIG_PATH: /config/config.json
+    volumes:
+      - ./appdata/opcua/dev:/config:ro
+    networks:
+      - highbyte-net
+
+  opcua-test:
+    build:
+      context: ./opcua-server
+    container_name: opcua-test
+    restart: on-failure
+    ports:
+      - "4841:4840"
+    environment:
+      CONFIG_PATH: /config/config.json
+    volumes:
+      - ./appdata/opcua/test:/config:ro
+    networks:
+      - highbyte-net
+
+networks:
+  highbyte-net:
+    driver: bridge

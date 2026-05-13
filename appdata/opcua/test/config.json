@@ -1,0 +1,9 @@
+{
+  "server_name": "opcua-test",
+  "host": "0.0.0.0",
+  "port": 4840,
+  "namespace": "urn:highbyte:opcua:test",
+  "status": "TEST_READY",
+  "counter_start": 200,
+  "temperature_start": 24.0
+}

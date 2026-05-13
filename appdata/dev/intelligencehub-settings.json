@@ -1,0 +1,98 @@
+{
+  "settings" : {
+    "version" : 1,
+    "directories" : { },
+    "api" : {
+      "sessionTimeout" : {
+        "duration" : 8,
+        "units" : "Hours"
+      },
+      "authenticationPreference" : "STAY_LOGGED_IN"
+    },
+    "configuration" : {
+      "scheme" : "http",
+      "schemeCertificate" : "ssl-certificate-private-key",
+      "port" : 45245,
+      "centralConfig" : true,
+      "autoSaveIntervalSeconds" : 60,
+      "backupCopies" : 50,
+      "highByteNamespace" : "enabled"
+    },
+    "hbMqttBroker" : {
+      "enabled" : true,
+      "allowAnonymous" : true,
+      "endpoints" : [ {
+        "hostname" : "0.0.0.0",
+        "port" : 1885,
+        "useSSL" : false,
+        "certificateKeyAlias" : "",
+        "protocol" : "mqtt.tcp"
+      }, {
+        "hostname" : "0.0.0.0",
+        "port" : 1886,
+        "useSSL" : false,
+        "certificateKeyAlias" : "",
+        "protocol" : "mqtt.ws"
+      } ]
+    },
+    "httpServer" : {
+      "hostname" : "0.0.0.0",
+      "port" : 8885,
+      "useHttps" : false,
+      "schemeCertificate" : "",
+      "allowAnonymous" : true,
+      "authenticationModes" : [ "API_KEY" ]
+    },
+    "serversConfig" : {
+      "i3xServer" : {
+        "enabled" : false
+      },
+      "mcpServer" : {
+        "enabled" : false,
+        "configTools" : "disabled"
+      },
+      "restDataServer" : {
+        "enabled" : true
+      }
+    },
+    "log" : {
+      "debugLogging" : "NONE",
+      "fileSizeMB" : 100,
+      "logAuditEvents" : false
+    },
+    "redundancy" : {
+      "backup" : {
+        "enabled" : false,
+        "primary" : {
+          "uri" : "",
+          "pingIntervalSeconds" : 10,
+          "pingAttempts" : 1,
+          "pingRequestTimeoutSeconds" : 10
+        }
+      }
+    },
+    "expressionEngine" : {
+      "allowExpressionEval" : false,
+      "allowEnvironmentVariables" : false,
+      "expressionEngineTimeoutSeconds" : 10,
+      "hubBindingName" : "hub",
+      "allowExpressionImports" : false
+    },
+    "backup" : {
+      "mode" : "disabled",
+      "cronSchedule" : "0 3 * * *",
+      "repo" : {
+        "type" : "git",
+        "name" : "HubBackup",
+        "uri" : "",
+        "author" : "HighByte IntelligenceHub",
+        "email" : "<>",
+        "auth" : {
+          "type" : "none"
+        }
+      },
+      "branch" : "highbyte-backup",
+      "deployFile" : "intelligencehub-deployment.json"
+    }
+  }
+}

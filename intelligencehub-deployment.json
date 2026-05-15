@@ -9,7 +9,7 @@
   "project" : {
     "version" : 13,
     "connections" : [ {
-      "name" : "localbroker",
+      "name" : "hivemq",
       "uri" : "mqtt://hivemq:{{System.Variables.mqtt_port}}",
       "tags" : [ ],
       "writes" : {
@@ -73,7 +73,7 @@
         }
       },
       "settings" : {
-        "security" : "Basic256Sha256-SignAndEncrypt",
+        "security" : "Basic256Sha256-SignEncrypt",
         "authentication" : {
           "type" : "Username_Basic256",
           "username" : "opcuauser",
@@ -89,13 +89,116 @@
       }
     } ],
     "conditions" : [ ],
-    "inputs" : [ ],
+    "inputs" : [ {
+      "name" : "Devices__test__Random",
+      "connection" : "ignition_opcua",
+      "type" : "opc.tcp",
+      "qualifier" : {
+        "type" : "Branch",
+        "identifier" : {
+          "type" : "NodeId",
+          "namespaceIndex" : "1",
+          "identifierType" : "String",
+          "value" : "[test]Random"
+        },
+        "cacheInterval" : {
+          "duration" : 1,
+          "units" : "Hours"
+        },
+        "maxDepth" : 1,
+        "browseVariableNodes" : false,
+        "ignoreBadQuality" : false,
+        "isComplex" : false
+      },
+      "cacheLifetime" : {
+        "enabled" : false
+      },
+      "template" : {
+        "type" : "Off"
+      },
+      "parameters" : {
+        "type" : "EmptyParameters"
+      }
+    } ],
     "outputs" : [ ],
     "modeling" : {
       "models" : [ ],
       "instances" : [ ]
     },
-    "pipelines" : [ ],
+    "pipelines" : [ {
+      "name" : "testPipeline",
+      "tags" : [ ],
+      "inputStages" : [ "Read" ],
+      "stages" : [ {
+        "name" : "WriteNew",
+        "display" : {
+          "position" : {
+            "x" : 690,
+            "y" : 0
+          }
+        },
+        "description" : "",
+        "config" : {
+          "type" : ".DynamicWriteConfig",
+          "failureOutputs" : [ ],
+          "connectionReference" : "{{Connection.hivemq}}",
+          "qualifier" : {
+            "topic" : "test",
+            "qos" : 0,
+            "namedRoot" : false,
+            "retained" : false,
+            "breakupArrays" : false
+          },
+          "qualifierExpression" : "",
+          "writeReturn" : "ignore"
+        },
+        "outputs" : [ ]
+      }, {
+        "name" : "Read",
+        "display" : {
+          "position" : {
+            "x" : 240,
+            "y" : 0
+          }
+        },
+        "description" : "",
+        "config" : {
+          "type" : ".ReadConfig",
+          "failureOutputs" : [ ],
+          "reference" : {
+            "type" : "Input",
+            "name" : "Devices__test__Random",
+            "path" : "",
+            "params" : { },
+            "connectionName" : "ignition_opcua"
+          }
+        },
+        "outputs" : [ "WriteNew" ]
+      } ],
+      "trackActivity" : false,
+      "triggers" : [ {
+        "name" : "every10s",
+        "display" : {
+          "position" : {
+            "x" : -450,
+            "y" : 0
+          }
+        },
+        "description" : "",
+        "config" : {
+          "type" : ".TriggerPolled",
+          "enabled" : true,
+          "interval" : {
+            "duration" : 10,
+            "units" : "Seconds"
+          },
+          "mode" : "interval"
+        }
+      } ],
+      "errorHandler" : {
+        "type" : "default"
+      }
+    } ],
     "tags" : [ ],
     "functions" : [ ],
     "namespace" : [ ]

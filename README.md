@@ -52,8 +52,21 @@ Only the `.project` and `.network` sections are imported (controlled by `keyPath
 ```bash
 git clone https://github.com/demerscj/highbyte.git
 cd highbyte
+
+# 1. Create the environment file (gitignored — never committed)
+cp .env.example .env
+# Edit .env and set IGNITION_ADMIN_PASSWORD to a real password
+
+# 2. Create the HighByte deployment-settings file (gitignored — never committed)
+#    Use the template in the "New site setup" section below
+
+# 3. Start the stack
 docker compose up -d
 ```
+
+On first start:
+- **Ignition** automatically restores from `ignition/gateway.gwbk`
+- **HighByte dev** pulls its project config from this repo's `main` branch
 
 Open the dev UI at http://localhost:45245 and log in with the default credentials.
 
@@ -67,14 +80,46 @@ The hub network requires tokens to be wired up after first start:
 4. Paste the token into `appdata/prod/intelligencehub-remoteconfig.json` (`"token"` field)
 5. `docker compose restart test prod`
 
-### Deployment credential setup (one-time)
+### New site setup — deployment-settings.json (one-time)
 
-The `deployment-settings.json` files hold the GitHub credentials used for startup config sync. These are gitignored. After cloning, populate `appdata/dev/deployment-settings.json` and `appdata/test/deployment-settings.json` with your repo URI and PAT, then encrypt them:
+`appdata/dev/deployment-settings.json` holds the GitHub credentials for startup config sync. It is gitignored. Create it manually before first start:
+
+```json
+{
+  "version": 0,
+  "repos": [{
+    "type": "git",
+    "name": "highbyte-shared",
+    "uri": "https://github.com/demerscj/highbyte",
+    "author": "HighByte IntelligenceHub",
+    "email": "",
+    "auth": {
+      "type": "pass",
+      "username": "<github-username>",
+      "password": "<github-pat>"
+    }
+  }],
+  "fragments": [{
+    "details": {
+      "type": "git",
+      "deployFile": "intelligencehub-deployment.json",
+      "repoName": "highbyte-shared",
+      "ref": "main"
+    },
+    "keyPaths": [".project", ".network"]
+  }]
+}
+```
+
+After the hub has started once (its certificate store is generated on first run), encrypt the PAT in-place:
 
 ```bash
-docker compose exec dev java -jar /usr/local/highbyte/runtime/intelligencehub-runtime.jar \
+docker exec -w /usr/local/highbyte/appData highbyte-dev \
+  java -jar /usr/local/highbyte/runtime/intelligencehub-runtime.jar \
   encrypt /usr/local/highbyte/appData/deployment-settings.json
 ```
+
+> **Note:** No cert-store copying is required. `intelligencehub-deployment.json` contains no encrypted values, so a fresh cert store generated on first run is sufficient.
 
 ## Repository Layout
 

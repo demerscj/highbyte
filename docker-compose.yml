@@ -58,15 +58,12 @@ services:
     volumes:
       - ignition-data:/usr/local/bin/ignition/data
       - ./ignition:/restore:ro
-    # ── Restore from validated gateway backup ──────────────────────────────
-    # Uncomment the -r flag AFTER committing ignition/gateway.gwbk.
-    # The restore only runs on a fresh (empty) data directory.
-    # See ignition/README.md for the full backup/restore workflow.
     command: >
       -n ignition
       -a localhost
       -h 8088
       -s 8043
+      -r /restore/gateway.gwbk 
     networks:
       - highbyte-net
     depends_on:

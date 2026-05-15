@@ -45,7 +45,7 @@
       }
     }, {
       "name" : "ignition_opcua",
-      "uri" : "opc.tcp://ignition:{{System.Variables.opc_server_port}}",
+      "uri" : "opc.tcp://ignition:{{System.Variables.opc_server_port}}/discovery",
       "tags" : [ ],
       "writes" : {
         "flattenModeledValues" : false
@@ -73,9 +73,11 @@
         }
       },
       "settings" : {
-        "security" : "None",
+        "security" : "Basic256Sha256-SignAndEncrypt",
         "authentication" : {
-          "type" : "Anonymous"
+          "type" : "Username_Basic256",
+          "username" : "opcuauser",
+          "password" : "password"
         },
         "connectTimeoutSeconds" : 5,
         "requestTimeoutMS" : 5000,

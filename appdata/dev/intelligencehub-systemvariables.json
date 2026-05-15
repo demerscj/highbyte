@@ -1,7 +1,4 @@
 [ {
-  "name" : "site_id",
-  "value" : "site-a"
-}, {
   "name" : "mqtt_port",
   "value" : "1883"
 }, {

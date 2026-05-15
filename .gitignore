@@ -35,3 +35,11 @@ __pycache__/
 
 # ── macOS ─────────────────────────────────────────────────────────────────────
 .DS_Store
+
+# ── HiveMQ runtime data ───────────────────────────────────────────────────────
+# config.xml IS committed (it's the validated broker config)
+appdata/hivemq/
+
+# ── Ignition runtime data ─────────────────────────────────────────────────────
+# ignition/gateway.gwbk IS committed once validated (see ignition/README.md)
+appdata/ignition/

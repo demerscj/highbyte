@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+  HiveMQ Community Edition — version-controlled configuration.
+
+  Loaded on broker startup via HIVEMQ_CONFIG_FOLDER.
+  Port is injected via the HIVEMQ_PORT environment variable so each
+  deployment environment (dev, test, Site A, Site B, …) can use a
+  different host-facing port without modifying this file.
+
+  Reference: https://github.com/hivemq/hivemq-community-edition/wiki/Configuration
+-->
+<hivemq xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <listeners>
+        <tcp-listener>
+            <port>${HIVEMQ_PORT}</port>
+            <bind-address>0.0.0.0</bind-address>
+        </tcp-listener>
+    </listeners>
+
+    <!--
+      In-memory persistence suits dev/test stacks where retained messages and
+      session state do not need to survive broker restarts.
+      Change to <mode>file</mode> (and add a data volume) for production.
+    -->
+    <persistence>
+        <mode>in-memory</mode>
+    </persistence>
+
+</hivemq>

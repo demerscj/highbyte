@@ -1,0 +1,154 @@
+{
+  "productInfo" : {
+    "company" : "HighByte",
+    "product" : "IntelligenceHub",
+    "version" : "4.4.0",
+    "build" : "2026.3.27.401",
+    "stage" : "Release"
+  },
+  "project" : {
+    "version" : 13,
+    "connections" : [ {
+      "name" : "localbroker",
+      "uri" : "mqtt://hivemq:{{System.Variables.mqtt_port}}",
+      "tags" : [ ],
+      "writes" : {
+        "flattenModeledValues" : false
+      },
+      "writeThrottle" : {
+        "enabled" : false,
+        "maxBatchSizePerTarget" : 1000,
+        "batchDelay" : {
+          "duration" : 20,
+          "units" : "Milliseconds"
+        }
+      },
+      "subscriptions" : { },
+      "storeForward" : {
+        "enabled" : false,
+        "maxEntries" : 100,
+        "waitOnFailureInterval" : {
+          "duration" : 1,
+          "units" : "Seconds"
+        }
+      },
+      "settings" : {
+        "connectionTimeoutSeconds" : 10,
+        "keepAliveSeconds" : 60,
+        "requestTimeoutMS" : 5000,
+        "maxInflight" : 1000,
+        "cleanSession" : true,
+        "mcpEnabled" : "disabled",
+        "ssl" : false,
+        "redundantBrokers" : [ ],
+        "inputDiscovery" : ""
+      }
+    }, {
+      "name" : "ignition-opcua",
+      "uri" : "opc.tcp://ignition:{{System.Variables.opc_server_port}}",
+      "tags" : [ ],
+      "writes" : {
+        "flattenModeledValues" : false
+      },
+      "writeThrottle" : {
+        "enabled" : false,
+        "maxBatchSizePerTarget" : 1000,
+        "batchDelay" : {
+          "duration" : 20,
+          "units" : "Milliseconds"
+        }
+      },
+      "subscriptions" : {
+        "subscriptionRate" : {
+          "duration" : 1,
+          "units" : "Seconds"
+        }
+      },
+      "storeForward" : {
+        "enabled" : false,
+        "maxEntries" : 100,
+        "waitOnFailureInterval" : {
+          "duration" : 1,
+          "units" : "Seconds"
+        }
+      },
+      "settings" : {
+        "security" : "None",
+        "authentication" : {
+          "type" : "Anonymous"
+        },
+        "connectTimeoutSeconds" : 5,
+        "requestTimeoutMS" : 5000,
+        "maxItemsPerRead" : 512,
+        "maxItemsPerWrite" : 256,
+        "identifierMode" : "NodeId",
+        "mcpEnabled" : "disabled",
+        "sessionName" : ""
+      }
+    } ],
+    "conditions" : [ ],
+    "inputs" : [ ],
+    "outputs" : [ ],
+    "modeling" : {
+      "models" : [ ],
+      "instances" : [ ]
+    },
+    "pipelines" : [ ],
+    "tags" : [ ],
+    "functions" : [ ],
+    "namespace" : [ ]
+  },
+  "network" : {
+    "version" : 0,
+    "groups" : [ {
+      "name" : "group",
+      "token" : "IbWlYrlO5XcrcOr-AFcokWFWuSeM3dUM"
+    } ],
+    "hubs" : [ ]
+  },
+  "accessControl" : {
+    "apiKeys" : [ ],
+    "version" : 0,
+    "roles" : [ {
+      "name" : "admin",
+      "policyVersion" : 1,
+      "claims" : [ {
+        "resources" : [ "*" ],
+        "actions" : [ "*" ]
+      } ]
+    }, {
+      "name" : "default",
+      "policyVersion" : 1,
+      "claims" : [ {
+        "resources" : [ "*" ],
+        "actions" : [ "read" ]
+      }, {
+        "resources" : [ "connection", "instance", "pipeline" ],
+        "actions" : [ "*" ]
+      } ]
+    } ],
+    "users" : [ {
+      "name" : "administrator",
+      "credentials" : {
+        "salt" : "NqcWdxn5JNlwABkX3i1HKw==",
+        "hashedPassword" : "swcB/D4Uji3m15sJY71K51AVPeEVYAZrqa+v9arwn+4vM6NEEeoZOTc6mV7D4U4LlQHIbCGcfBFjgShuiHysnA=="
+      },
+      "policyVersion" : 1,
+      "roles" : [ "admin" ],
+      "claims" : [ ]
+    } ]
+  },
+  "system" : {
+    "version" : 0,
+    "variables" : [ {
+      "name" : "mqtt_port",
+      "value" : "1883"
+    }, {
+      "name" : "opc_server_port",
+      "value" : "62541"
+    } ],
+    "secrets" : [ ],
+    "certificates" : [ ]
+  },
+  "identityProviders" : { }
+}

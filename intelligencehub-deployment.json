@@ -44,7 +44,7 @@
         "inputDiscovery" : ""
       }
     }, {
-      "name" : "ignition-opcua",
+      "name" : "ignition_opcua",
       "uri" : "opc.tcp://ignition:{{System.Variables.opc_server_port}}",
       "tags" : [ ],
       "writes" : {
